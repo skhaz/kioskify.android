@@ -180,17 +180,15 @@ public class PlayerController {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
                                         @Nullable FirebaseFirestoreException exception) {
+                        if (exception != null || documentSnapshot == null) {
+                            return;
+                        }
+
                         synchronized (this) {
-                            if (exception != null || documentSnapshot == null) {
-                                return;
-                            }
+                            if (!mediaSources.isEmpty()) {
+                                mediaSources.clear();
 
-                            synchronized (mediaSources) {
-                                if (!mediaSources.isEmpty()) {
-                                    mediaSources.clear();
-
-                                    buildPlaylist();
-                                }
+                                buildPlaylist();
                             }
 
                             if (innerSubscriber != null) {
@@ -459,6 +457,7 @@ public class PlayerController {
 
             DocumentReference videoRef = firestore.collection("videos").document(videoId);
 
+            /*
             videoRef.update("playbackCounter", FieldValue.increment(1))
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
@@ -466,6 +465,7 @@ public class PlayerController {
                             // ...
                         }
                     });
+            */
         }
     }
 }
