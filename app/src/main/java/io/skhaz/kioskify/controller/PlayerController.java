@@ -180,57 +180,59 @@ public class PlayerController {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot,
                                         @Nullable FirebaseFirestoreException exception) {
-                        if (exception != null || documentSnapshot == null) {
-                            return;
-                        }
-
-                        synchronized (mediaSources) {
-                            if (!mediaSources.isEmpty()) {
-                                mediaSources.clear();
-
-                                buildPlaylist();
+                        synchronized (this) {
+                            if (exception != null || documentSnapshot == null) {
+                                return;
                             }
-                        }
 
-                        if (innerSubscriber != null) {
-                            innerSubscriber.remove();
-                            innerSubscriber = null;
-                        }
+                            synchronized (mediaSources) {
+                                if (!mediaSources.isEmpty()) {
+                                    mediaSources.clear();
 
-                        DocumentReference groupRef =
-                                documentSnapshot.getDocumentReference("group");
-
-                        if (groupRef == null) {
-                            return;
-                        }
-
-                        List<Task<Void>> tasks = new ArrayList<>();
-
-                        Task<Void> subscribeTask = messaging.subscribeToTopic(groupRef.getId());
-
-                        tasks.add(subscribeTask);
-
-                        DocumentReference unsubscribe =
-                                documentSnapshot.getDocumentReference("unsubscribe");
-
-                        if (unsubscribe != null) {
-                            String id = unsubscribe.getId();
-                            if (!Strings.isNullOrEmpty(id)) {
-                                Task<Void> unsubscribeTask = messaging.unsubscribeFromTopic(id);
-                                tasks.add(unsubscribeTask);
+                                    buildPlaylist();
+                                }
                             }
-                        }
 
-                        Tasks.whenAll(tasks).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                // ...
+                            if (innerSubscriber != null) {
+                                innerSubscriber.remove();
+                                innerSubscriber = null;
                             }
-                        });
 
-                        innerSubscriber = firestore.collection("v1")
-                                .whereEqualTo("group", groupRef)
-                                .addSnapshotListener(onSnapshot);
+                            DocumentReference groupRef =
+                                    documentSnapshot.getDocumentReference("group");
+
+                            if (groupRef == null) {
+                                return;
+                            }
+
+                            List<Task<Void>> tasks = new ArrayList<>();
+
+                            Task<Void> subscribeTask = messaging.subscribeToTopic(groupRef.getId());
+
+                            tasks.add(subscribeTask);
+
+                            DocumentReference unsubscribe =
+                                    documentSnapshot.getDocumentReference("unsubscribe");
+
+                            if (unsubscribe != null) {
+                                String id = unsubscribe.getId();
+                                if (!Strings.isNullOrEmpty(id)) {
+                                    Task<Void> unsubscribeTask = messaging.unsubscribeFromTopic(id);
+                                    tasks.add(unsubscribeTask);
+                                }
+                            }
+
+                            Tasks.whenAll(tasks).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    // ...
+                                }
+                            });
+
+                            innerSubscriber = firestore.collection("v1")
+                                    .whereEqualTo("group", groupRef)
+                                    .addSnapshotListener(onSnapshot);
+                        }
                     }
                 });
     }

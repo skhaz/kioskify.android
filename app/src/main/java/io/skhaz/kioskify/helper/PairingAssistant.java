@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Locale;
 
 import io.skhaz.kioskify.R;
 
@@ -62,7 +63,7 @@ public class PairingAssistant {
                         random.nextInt(allowedCharacters.length())));
             }
 
-            String pinCode = builder.toString().toUpperCase();
+            String pinCode = builder.toString().toUpperCase(Locale.getDefault());
 
             Map<String, Object> document = new HashMap<>();
             document.put("pinCode", pinCode);
