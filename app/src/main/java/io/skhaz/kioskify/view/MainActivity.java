@@ -19,7 +19,9 @@ public class MainActivity extends Activity implements PlaybackPreparer {
 
     private PlayerView playerView;
 
-    private TextView textView;
+    private TextView pinView;
+
+    private TextView infoView;
 
     private PlayerController playerController;
 
@@ -39,7 +41,8 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         playerView.requestFocus();
         playerView.setUseController(false);
         playerView.setPlaybackPreparer(this);
-        textView = findViewById(R.id.text_view);
+        pinView = findViewById(R.id.pin_view);
+        infoView = findViewById(R.id.info_view);
         playerController = new PlayerController(this);
         pairingAssistant = new PairingAssistant(this);
     }
@@ -49,7 +52,7 @@ public class MainActivity extends Activity implements PlaybackPreparer {
         super.onStart();
 
         playerController.init(playerView);
-        pairingAssistant.init(textView);
+        pairingAssistant.init(pinView, infoView);
     }
 
     @Override

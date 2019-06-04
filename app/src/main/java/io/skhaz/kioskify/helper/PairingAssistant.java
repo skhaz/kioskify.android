@@ -37,15 +37,19 @@ public class PairingAssistant {
 
     private ListenerRegistration subscriber;
 
-    private TextView textView;
+    private TextView pinView;
+
+    private TextView infoView;
 
     public PairingAssistant(Context context) {
         this.context = context;
         firestore = FirebaseFirestore.getInstance();
     }
 
-    public void init(TextView textView) {
-        this.textView = textView;
+    public void init(TextView pinView, TextView infoView) {
+        this.pinView = pinView;
+        this.infoView = infoView;
+
         SharedPreferences sharedPreferences =
                 PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -84,13 +88,15 @@ public class PairingAssistant {
 
                 @Override
                 public void onSuccess(Void aVoid) {
-                    textView.setVisibility(View.VISIBLE);
-                    textView.setText(pinCode);
+                    infoView.setVisibility(View.VISIBLE);
+                    pinView.setVisibility(View.VISIBLE);
+                    pinView.setText(pinCode);
                 }
             });
 
-            textView.setVisibility(View.VISIBLE);
-            textView.setText(
+            infoView.setVisibility(View.VISIBLE);
+            pinView.setVisibility(View.VISIBLE);
+            pinView.setText(
                     context.getString(R.string.synchronizing));
         }
 
@@ -124,14 +130,16 @@ public class PairingAssistant {
                         boolean invalidPinCode = Strings.isNullOrEmpty(pinCode);
 
                         if (invalidPinCode) {
-                            textView.setText(null);
-                            textView.setVisibility(View.GONE);
+                            infoView.setVisibility(View.GONE);
+                            pinView.setVisibility(View.GONE);
+                            pinView.setText(null);
 
                             return;
                         }
 
-                        textView.setVisibility(View.VISIBLE);
-                        textView.setText(pinCode);
+                        infoView.setVisibility(View.VISIBLE);
+                        pinView.setVisibility(View.VISIBLE);
+                        pinView.setText(pinCode);
                     }
                 });
     }

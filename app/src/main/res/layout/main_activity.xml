@@ -11,14 +11,29 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+
     <TextView
-        android:id="@+id/text_view"
+        android:id="@+id/info_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:lineSpacingExtra="8sp"
+        android:text="@string/register"
+        android:textAlignment="viewEnd"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/pin_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_marginBottom="8dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:textColor="@color/white"
         android:textSize="42sp"
         android:visibility="gone" />
