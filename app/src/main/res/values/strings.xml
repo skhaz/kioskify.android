@@ -2,6 +2,6 @@
     <string name="app_name">Kioskify</string>
     <string name="allowed_characters">abcdefghijklmnopqrstuvwxyz</string>
     <string name="synchronizing">Synchronizing, please wait&#8230;</string>
-    <string name="register">register it using the code below on the website.\n\nhttps://kioskify.app/#!/register</string>
+    <string name="register">register it using the code below on the website.\n\nhttps://kioskify.app</string>
 </resources>
 
