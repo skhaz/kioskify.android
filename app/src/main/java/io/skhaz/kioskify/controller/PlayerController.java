@@ -387,8 +387,7 @@ public class PlayerController {
 
     }
 
-    private @Nullable
-    String getCurrentPlayingVideoId() {
+    private String getCurrentPlayingVideoId() {
         if (player == null || playlist.isEmpty()) {
             return null;
         }
