@@ -2,6 +2,7 @@ package io.skhaz.kioskify.helper;
 
 import android.content.Context;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 import android.webkit.URLUtil;
 
@@ -42,8 +43,9 @@ public class DownloadTracker implements DownloadManager.Listener {
         }
     }
 
-    public boolean isDownloaded(String url) {
-        Download download = downloads.get(Uri.parse(url));
+    private boolean isDownloaded(String url) {
+        Uri uri = Uri.parse(url);
+        Download download = downloads.get(uri);
         return download != null && download.state != Download.STATE_FAILED;
     }
 

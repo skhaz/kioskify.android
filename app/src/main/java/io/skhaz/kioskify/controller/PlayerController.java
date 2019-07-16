@@ -1,5 +1,6 @@
 package io.skhaz.kioskify.controller;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
@@ -7,6 +8,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.webkit.URLUtil;
 
 import androidx.annotation.NonNull;
@@ -39,11 +41,14 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.protobuf.DescriptorProtos;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -369,7 +374,7 @@ public class PlayerController {
                 }
 
                 final MediaSource mediaSource =
-                        new ConcatenatingMediaSource(sources.toArray(new MediaSource[sources.size()]));
+                        new ConcatenatingMediaSource(sources.toArray(new MediaSource[0]));
 
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
@@ -382,7 +387,8 @@ public class PlayerController {
 
     }
 
-    private @Nullable String getCurrentPlayingVideoId() {
+    private @Nullable
+    String getCurrentPlayingVideoId() {
         if (player == null || playlist.isEmpty()) {
             return null;
         }
@@ -448,6 +454,7 @@ public class PlayerController {
         }
 
         @Override
+        @SuppressLint("DefaultLocale")
         public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
             String videoId = getCurrentPlayingVideoId();
 
@@ -455,17 +462,26 @@ public class PlayerController {
                 return;
             }
 
-            DocumentReference videoRef = firestore.collection("videos").document(videoId);
+            final int numShards = 100;
 
-            /*
-            videoRef.update("playbackCounter", FieldValue.increment(1))
+            int shard = (int) Math.floor(Math.random() * numShards);
+            Map<String, Object> data = new HashMap<>();
+            data.put("count", FieldValue.increment(1));
+
+            DocumentReference reference =
+                    firestore
+                            .collection("videos")
+                            .document(videoId)
+                            .collection("shards")
+                            .document(String.valueOf(shard));
+
+            reference.set(data, SetOptions.merge())
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             // ...
                         }
                     });
-            */
         }
     }
 }
