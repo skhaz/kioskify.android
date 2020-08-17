@@ -4,7 +4,6 @@ import android.content.Context;
 
 import androidx.multidex.MultiDex;
 
-import com.crashlytics.android.Crashlytics;
 import com.google.android.exoplayer2.database.DatabaseProvider;
 import com.google.android.exoplayer2.database.ExoDatabaseProvider;
 import com.google.android.exoplayer2.offline.ActionFileUpgradeUtil;
@@ -29,7 +28,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.File;
 import java.io.IOException;
 
-import io.fabric.sdk.android.Fabric;
 import io.skhaz.kioskify.BuildConfig;
 import io.skhaz.kioskify.R;
 import io.skhaz.kioskify.helper.DownloadTracker;
@@ -62,7 +60,7 @@ public class Application extends android.app.Application {
             FirebaseAnalytics.getInstance(this)
                     .setAnalyticsCollectionEnabled(false);
         } else {
-            Fabric.with(this, new Crashlytics());
+            // Fabric.with(this, new Crashlytics());
         }
     }
 
